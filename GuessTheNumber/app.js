@@ -2,6 +2,10 @@ const form = document.querySelector("form");
 const submit = document.querySelector("#subt");
 const userInput = document.getElementById("guessField");
 const previousGuess = document.querySelector('.guesses');
+const startOver = document.querySelector('.resultParas');
+const remainingNumberOfGuess = document.querySelector('.lastResult');
+
+const p = document.createElement("p");
 
 const lowOrHi = document.querySelector('.lowOrHi');
 const randomNumber = randomNumberGenerator();
@@ -16,19 +20,20 @@ submit.addEventListener('click', function(e){
     const guess = parseInt(userInput.value);
     console.log(guess);
 
-    const remainingNumberOfGuess = document.querySelector('.lastResult');
+    
     let remainingGuesses = parseInt(remainingNumberOfGuess.innerText)
     console.log(remainingGuesses)
 
     // validation
-    if(guess === "" || isNaN(guess) || guess < 1){
+    if(guess === "" || isNaN(guess) || guess < 1 || guess > 100){
         alert("Please add a valid number");
     }
 
     // check
-    if(remainingGuesses > 0){
+    if(remainingGuesses > 7){
         if(guess === randomNumber){
             lowOrHi.innerText = `Correct Guess`;
+            endGame(randomNumber);
         }
         else if (guess > randomNumber){
             lowOrHi.innerText = `Lower than ${guess}`;
@@ -48,7 +53,27 @@ submit.addEventListener('click', function(e){
 
     }
     else {
-        lowOrHi.innerText = `Game Over`;
+        endGame(randomNumber);
     }
 
 })
+
+function endGame(correctGuess){
+    lowOrHi.innerText = `Game Over. Correct Guess was ${correctGuess}`;
+    userInput.innerHTML = "";
+    userInput.setAttribute("disabled", "");
+    p.classList.add("button");
+    p.innerHTML = `<h2 class="startbtn">Start Over</h2>`
+    startOver.appendChild(p);
+    newGame();
+}
+
+
+function newGame(){
+    userInput.removeAttribute("disabled");
+    startOver.addEventListener("click", function(){
+        previousGuess.innerHTML = "";
+        remainingNumberOfGuess.innerHTML = 10;
+        lowOrHi.innerHTML = "";
+    })
+}
